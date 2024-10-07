@@ -73,7 +73,7 @@ const App = (props) => {
   
 
   const deletePerson = (id) => {
-    const deleteThisPerson = persons.find(person => person.id === id)
+    const deleteThisPerson = Array.isArray(persons) ? persons.find(person => person.id === id) : undefined
     if (window.confirm(`Delete ${deleteThisPerson.name}?`)) {
       phonebookService
         .remove(id)
