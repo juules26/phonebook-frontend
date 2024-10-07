@@ -16,8 +16,12 @@ const App = (props) => {
   useEffect(() => {
     phonebookService
       .getAll() 
-      .then(PersonsResponse => { 
-        setPersons(PersonsResponse.data) 
+      .then(response => { 
+        console.log('fetched personss:', response.data)
+        setPersons(response.data) 
+      })
+      .catch(error => {
+        console.error('Error fetching persons:', error)
       })
   }, [])
 
@@ -67,9 +71,9 @@ const App = (props) => {
     }
   }
 
-  const filteredPersons = Array.isArray(persons) ? persons.filter(person => 
+  const filteredPersons = persons.filter(person => 
     person.name && person.name.toLowerCase().includes(filtered.toLowerCase())
-  ) : [];
+  )
   
 
   const deletePerson = (id) => {
