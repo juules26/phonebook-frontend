@@ -24,7 +24,7 @@ const App = (props) => {
   const addName = (event) => {
     event.preventDefault()
 
-    const nameExists = persons.find(person => person.name === newName)
+    const nameExists = Array.isArray(persons) ? persons.find(person => person.name === newName) : undefined
     if (nameExists) { 
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const updatedPerson = {...nameExists, number: newNumber}
