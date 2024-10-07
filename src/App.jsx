@@ -67,9 +67,10 @@ const App = (props) => {
     }
   }
 
-  const filteredPersons = persons.filter(person => 
+  const filteredPersons = Array.isArray(persons) ? persons.filter(person => 
     person.name && person.name.toLowerCase().includes(filtered.toLowerCase())
-  )
+  ) : [];
+  
 
   const deletePerson = (id) => {
     const deleteThisPerson = persons.find(person => person.id === id)
