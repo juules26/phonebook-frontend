@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -5,7 +6,7 @@ import PersonList from './components/PersonList'
 import phonebookService from './services/phonebook'
 import './App.css'
 
-const App = (props) => {
+const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -25,6 +26,18 @@ const App = (props) => {
       })
   }, [])
 
+  const handleError = (error) => {
+    console.error(error.message)
+
+    if (error.response && error.response.data && error.response.data.error) {
+      setErrorMessage(error.response.data.error)
+      console.log(error.response.data.error)
+    } else {
+      setErrorMessage('Name or number wrong')
+    }
+    setTimeout(() => setErrorMessage(''), 5000)
+  }
+
   const addName = (event) => {
     event.preventDefault()
 
@@ -36,17 +49,15 @@ const App = (props) => {
         phonebookService
         .update(nameExists.id, updatedPerson)
         .then(returnedPerson => {
-          setPersons(persons.map(person => person.id !== nameExists.id ? person : returnedPerson.data))
+          setPersons(currentPersons => 
+            currentPersons.map(person => person.id !== nameExists.id ? person : returnedPerson.data))
+          console.log('Returned person:', returnedPerson);
           setSuccessMessage(`Updated ${returnedPerson.data.name}`)
           setNewName('')
           setNewNumber('')
           setTimeout(() => setSuccessMessage(''), 10000)
         })
-        .catch(error => {
-          console.error('Error updating person:', error)
-          setErrorMessage('Error updating person')
-          setTimeout(() => setErrorMessage(''), 3000)
-        })
+        .catch(handleError)
       }
     } else if (newName.trim() && newNumber.trim()) {
       const nameObject = {
@@ -63,11 +74,7 @@ const App = (props) => {
           setSuccessMessage(`Added ${returnedPerson.data.name}`)
           setTimeout(() => setSuccessMessage(''), 3000)
         })
-        .catch(error => {
-          console.error('Error adding person:', error)
-          setErrorMessage('Error adding person')
-          setTimeout(() => setErrorMessage(''), 3000) 
-        })
+        .catch(handleError)
     }
   }
 
@@ -75,7 +82,6 @@ const App = (props) => {
     person.name && person.name.toLowerCase().includes(filtered.toLowerCase())
   )
   
-
   const deletePerson = (id) => {
     const deleteThisPerson = Array.isArray(persons) ? persons.find(person => person.id === id) : undefined
     if (window.confirm(`Delete ${deleteThisPerson.name}?`)) {

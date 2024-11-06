@@ -1,6 +1,5 @@
 import axios from "axios";
-const baseurl = 'https://notes-backend-kjkg.onrender.com/api/persons'
-//const baseurl = 'http://localhost:3001/api/persons'
+const baseurl = 'http://localhost:3001/api/persons'
 
 const getAll = () => {
     return axios.get(baseurl) //GET
